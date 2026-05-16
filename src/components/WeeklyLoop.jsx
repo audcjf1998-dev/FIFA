@@ -1,40 +1,54 @@
 import React from 'react';
-import { Calendar, Activity, Scale, Bot } from 'lucide-react';
+import { RefreshCw, Calendar, Activity, Scale, Users } from 'lucide-react';
 
 const WeeklyLoop = () => {
   return (
-    <div className="glass-panel weekly-loop animate-fade-in" style={{ animationDelay: '0.1s' }}>
-      <h2 className="loop-header">
-        <Activity color="var(--accent-green)" />
-        주간 HR 루프 (Weekly HR Loop)
-      </h2>
-      <div className="loop-steps">
-        <div className="loop-step">
-          <div className="step-icon"><Calendar size={24} /></div>
-          <div className="step-content">
-            <h4>1. [월요일] Priority Sync (우선순위 동기화)</h4>
-            <p>실무자가 핵심 업무 3가지를 입력하고 관리자가 조정. AI 일치도 90% 달성 시 삽질 제로.</p>
+    <div className="weekly-loop-container glass-panel">
+      <div className="loop-left-title">
+        <RefreshCw className="loop-spin-icon" size={32} color="var(--accent-blue)" />
+        <div className="loop-title-text">
+          <h3>WEEKLY</h3>
+          <h3>HR LOOP</h3>
+          <p>지속적인 성장과 공정한 관리의 루프</p>
+        </div>
+      </div>
+
+      <div className="loop-horizontal-steps">
+        <div className="h-step active">
+          <div className="step-number">1</div>
+          <div className="h-step-content">
+            <h4 style={{color: 'var(--accent-blue)'}}><Calendar size={16}/> 월요일 Priority Sync</h4>
+            <p>업무 우선순위 합의</p>
           </div>
         </div>
-        <div className="loop-step">
-          <div className="step-icon"><Activity size={24} /></div>
-          <div className="step-content">
-            <h4>2. [수시] Context Tracker (진행 상태 추적)</h4>
-            <p>합의된 목표를 바탕으로 업무 진행. 관리자의 방향성 안에서 심리적 안정감을 얻고 성과 도출.</p>
+        
+        <div className="step-arrow">→</div>
+        
+        <div className="h-step">
+          <div className="step-number" style={{borderColor: 'var(--accent-green)', color: 'var(--accent-green)'}}>2</div>
+          <div className="h-step-content">
+            <h4 style={{color: 'var(--accent-green)'}}><Activity size={16}/> 수시 Context Tracker</h4>
+            <p>진행 상태 추적</p>
           </div>
         </div>
-        <div className="loop-step">
-          <div className="step-icon"><Scale size={24} /></div>
-          <div className="step-content">
-            <h4>3. [금요일] Equity Pulse (공정성 체감 체크)</h4>
-            <p>프로젝트 피드백. 아담스의 공정성 이론을 적용하여 '투입(야근) 대비 산출(보상)'의 균형 분석.</p>
+
+        <div className="step-arrow">→</div>
+        
+        <div className="h-step">
+          <div className="step-number" style={{borderColor: '#a855f7', color: '#a855f7'}}>3</div>
+          <div className="h-step-content">
+            <h4 style={{color: '#a855f7'}}><Scale size={16}/> 금요일 Equity Pulse</h4>
+            <p>공정성 체감 체크</p>
           </div>
         </div>
-        <div className="loop-step">
-          <div className="step-icon"><Bot size={24} /></div>
-          <div className="step-content">
-            <h4>4. [주말] AI Leadership Mirror (리더십 성찰 거울)</h4>
-            <p>감정이 배제된 정제된 리더십 성찰 리포트 제공. 다음 주 우선순위 회의 전 칭찬/업무량 재분배 유도.</p>
+
+        <div className="step-arrow">→</div>
+        
+        <div className="h-step">
+          <div className="step-number" style={{borderColor: 'var(--accent-gold)', color: 'var(--accent-gold)'}}>4</div>
+          <div className="h-step-content">
+            <h4 style={{color: 'var(--accent-gold)'}}><Users size={16}/> AI Leadership Mirror</h4>
+            <p>리더십 성찰 리포트</p>
           </div>
         </div>
       </div>
