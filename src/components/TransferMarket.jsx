@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import PlayerCard from './PlayerCard';
 import PlayerDetailModal from './PlayerDetailModal';
 import ProjectAssignModal from './ProjectAssignModal';
@@ -138,9 +139,9 @@ const TransferMarket = () => {
       )}
 
       {/* Modals */}
-      {modalType === 'detail' && selectedPlayer && <PlayerDetailModal player={selectedPlayer} onClose={() => setModalType(null)} />}
-      {modalType === 'assign' && selectedPlayer && <ProjectAssignModal player={selectedPlayer} onClose={() => setModalType(null)} />}
-      {modalType === 'workload' && selectedPlayer && <WorkloadModal player={selectedPlayer} onClose={() => setModalType(null)} />}
+      {modalType === 'detail' && selectedPlayer && createPortal(<PlayerDetailModal player={selectedPlayer} onClose={() => setModalType(null)} />, document.body)}
+      {modalType === 'assign' && selectedPlayer && createPortal(<ProjectAssignModal player={selectedPlayer} onClose={() => setModalType(null)} />, document.body)}
+      {modalType === 'workload' && selectedPlayer && createPortal(<WorkloadModal player={selectedPlayer} onClose={() => setModalType(null)} />, document.body)}
     </div>
   );
 };

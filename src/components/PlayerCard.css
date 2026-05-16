@@ -1,6 +1,6 @@
 .player-card {
   position: relative;
-  width: 240px;
+  width: 265px;
   border-radius: 12px;
   padding: 16px;
   display: flex;
@@ -121,7 +121,7 @@
   margin-top: 16px;
   padding-top: 12px;
   border-top: 1px solid rgba(255,255,255,0.1);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 .footer-item {

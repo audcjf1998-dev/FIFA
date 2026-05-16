@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Bell, Shield, ShieldOff, Plus } from 'lucide-react';
 import ProjectModal from './ProjectModal';
 
@@ -100,7 +101,7 @@ const Header = ({ currentMode, setCurrentMode }) => {
         </div>
       </div>
 
-      {showProjectModal && <ProjectModal onClose={() => setShowProjectModal(false)} />}
+      {showProjectModal && createPortal(<ProjectModal onClose={() => setShowProjectModal(false)} />, document.body)}
     </>
   );
 };
