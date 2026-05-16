@@ -1,13 +1,32 @@
-import React from 'react';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import React, { useState } from 'react';
+import { TrendingUp, TrendingDown, Minus, Heart } from 'lucide-react';
 import './PlayerCard.css';
 
-const PlayerCard = ({ name, role, dept, ovr, stats, form, potential, imageUrl, type = 'gold' }) => {
+const PlayerCard = ({ name, role, dept, ovr, stats, form, potential, imageUrl, type = 'gold', isFavorite: initFav = false }) => {
+  const [isFavorite, setIsFavorite] = useState(initFav);
+  
   const FormIcon = form === 'up' ? TrendingUp : form === 'down' ? TrendingDown : Minus;
   const formClass = form === 'up' ? 'form-up' : form === 'down' ? 'form-down' : 'form-flat';
 
   return (
     <div className={`player-card card-${type} animate-fade-in`}>
+      <button 
+        onClick={(e) => { e.stopPropagation(); setIsFavorite(!isFavorite); }}
+        style={{ 
+          position: 'absolute', top: '12px', right: '12px', zIndex: 10,
+          background: 'none', border: 'none', cursor: 'pointer',
+          transition: 'transform 0.2s'
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.2)'}
+        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+      >
+        <Heart 
+          size={22} 
+          color={isFavorite ? '#ef4444' : 'rgba(255,255,255,0.4)'} 
+          fill={isFavorite ? '#ef4444' : 'transparent'} 
+        />
+      </button>
+
       <div className="card-top">
         <div className="card-ovr">
           <span className="ovr-value">{ovr}</span>
