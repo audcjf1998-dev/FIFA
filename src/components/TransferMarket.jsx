@@ -1,6 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import PlayerCard from './PlayerCard';
-import { Users, Filter, Search } from 'lucide-react';
+import PlayerDetailModal from './PlayerDetailModal';
+import ProjectAssignModal from './ProjectAssignModal';
+import WorkloadModal from './WorkloadModal';
+import { Users, Filter, Search, BarChart2 } from 'lucide-react';
 
 const initialPlayers = [
   {
@@ -42,32 +45,44 @@ const TransferMarket = () => {
   const [activeTab, setActiveTab] = useState('전체 인재');
   const [sortDesc, setSortDesc] = useState(true);
 
+  // Compare state
+  const [comparedIds, setComparedIds] = useState([]);
+
+  // Modal states
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [modalType, setModalType] = useState(null); // 'detail', 'assign', 'workload'
+
   const filteredPlayers = useMemo(() => {
     let result = initialPlayers;
+    if (activeTab === '관심 인재') result = result.filter(p => p.isFavorite);
+    else if (activeTab === '내 팀') result = result.filter(p => p.dept === 'Data 팀');
 
-    // 1. 탭 필터링
-    if (activeTab === '관심 인재') {
-      result = result.filter(p => p.isFavorite);
-    } else if (activeTab === '내 팀') {
-      result = result.filter(p => p.dept === 'Data 팀'); // 가상 데이터
-    }
-
-    // 2. 검색어 필터링
     if (searchTerm) {
       const lower = searchTerm.toLowerCase();
-      result = result.filter(p => 
-        p.name.toLowerCase().includes(lower) || 
-        p.role.toLowerCase().includes(lower) || 
-        p.dept.toLowerCase().includes(lower)
-      );
+      result = result.filter(p => p.name.toLowerCase().includes(lower) || p.role.toLowerCase().includes(lower) || p.dept.toLowerCase().includes(lower));
     }
-
-    // 3. 정렬
     return result.sort((a, b) => sortDesc ? b.ovr - a.ovr : a.ovr - b.ovr);
   }, [searchTerm, activeTab, sortDesc]);
 
+  const toggleCompare = (id) => {
+    if (comparedIds.includes(id)) {
+      setComparedIds(comparedIds.filter(cid => cid !== id));
+    } else {
+      if (comparedIds.length >= 3) {
+        alert('최대 3명까지만 비교할 수 있습니다.');
+        return;
+      }
+      setComparedIds([...comparedIds, id]);
+    }
+  };
+
+  const handleOpenModal = (player, type) => {
+    setSelectedPlayer(player);
+    setModalType(type);
+  };
+
   return (
-    <div className="glass-panel transfer-market-panel">
+    <div className="glass-panel transfer-market-panel" style={{ position: 'relative' }}>
       <div className="tm-header">
         <h2 className="tm-title"><Users color="var(--text-main)" size={24} /> 인재 마켓</h2>
         <div className="tm-controls">
@@ -88,34 +103,44 @@ const TransferMarket = () => {
       
       <div className="tm-tabs">
         {tabs.map(tab => (
-          <div 
-            key={tab} 
-            className={`tm-tab ${activeTab === tab ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab)}
-          >
+          <div key={tab} className={`tm-tab ${activeTab === tab ? 'active' : ''}`} onClick={() => setActiveTab(tab)}>
             {tab}
           </div>
         ))}
       </div>
 
-      <div className="tm-stats-bar">
-        <span>👤 전체 인재 268명</span>
-        <span>⭐ 핵심 인재 48명</span>
-        <span>📁 프로젝트 참여 가능 76명</span>
-        <span>🔄 사내 이동 가능 62명</span>
-      </div>
-
-      <div className="market-cards">
+      <div className="market-cards" style={{ paddingBottom: comparedIds.length > 0 ? '60px' : '10px' }}>
         {filteredPlayers.length > 0 ? (
           filteredPlayers.map((p) => (
-            <PlayerCard key={p.id} {...p} />
+            <PlayerCard 
+              key={p.id} 
+              player={p} 
+              isCompared={comparedIds.includes(p.id)}
+              toggleCompare={toggleCompare}
+              onOpenDetail={(player) => handleOpenModal(player, 'detail')}
+              onOpenAssign={(player) => handleOpenModal(player, 'assign')}
+              onOpenWorkload={() => handleOpenModal(p, 'workload')}
+            />
           ))
         ) : (
-          <div style={{ padding: '40px', textAlign: 'center', width: '100%', color: 'var(--text-muted)' }}>
-            조건에 맞는 인재가 없습니다.
-          </div>
+          <div style={{ padding: '40px', textAlign: 'center', width: '100%', color: 'var(--text-muted)' }}>조건에 맞는 인재가 없습니다.</div>
         )}
       </div>
+
+      {comparedIds.length > 0 && (
+        <div className="compare-floating-bar animate-fade-in" style={{ position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)', background: 'var(--accent-blue)', color: 'white', padding: '12px 24px', borderRadius: '30px', display: 'flex', alignItems: 'center', gap: '15px', boxShadow: '0 10px 20px rgba(0,0,0,0.4)', zIndex: 50 }}>
+          <span style={{ fontWeight: 'bold' }}>{comparedIds.length}명 비교 선택됨</span>
+          <button style={{ background: 'white', color: 'var(--accent-blue)', border: 'none', padding: '6px 16px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => { alert('비교하기 모달을 띄웁니다.\n선택된 직원들의 능력치, 적합도, 업무 부담도가 한눈에 비교됩니다.'); setComparedIds([]); }}>
+            <BarChart2 size={16} /> 비교하기
+          </button>
+          <button style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', marginLeft: '5px' }} onClick={() => setComparedIds([])}>초기화</button>
+        </div>
+      )}
+
+      {/* Modals */}
+      {modalType === 'detail' && selectedPlayer && <PlayerDetailModal player={selectedPlayer} onClose={() => setModalType(null)} />}
+      {modalType === 'assign' && selectedPlayer && <ProjectAssignModal player={selectedPlayer} onClose={() => setModalType(null)} />}
+      {modalType === 'workload' && selectedPlayer && <WorkloadModal player={selectedPlayer} onClose={() => setModalType(null)} />}
     </div>
   );
 };
